@@ -11,6 +11,7 @@ struct CellItem: Identifiable {
     var id = UUID()
     let title: String
     let image: String
+    let destination: AnyView
 }
 
 struct AuthListView: View {
@@ -42,21 +43,19 @@ struct IconImageView: View {
 
 struct ListView: View {
     @State private var cellList: [CellItem] = [
-        CellItem(title: "", image: ""),
-        CellItem(title: "Phone", image: "Phone"),
-        CellItem(title: "Email", image: "Email"),
-        CellItem(title: "Google", image: "Google"),
-        CellItem(title: "Facebook", image: "Facebook"),
-        CellItem(title: "Twitter", image: "Twitter")]
+        CellItem(title: "Icon", image: "", destination: AnyView(EmptyView())),
+        CellItem(title: "Phone", image: "Phone", destination: AnyView(EmailView())),
+        CellItem(title: "Email", image: "Email", destination: AnyView(PhoneView())),
+        CellItem(title: "Google", image: "Google", destination: AnyView(HomeView())),
+        CellItem(title: "Facebook", image: "Facebook", destination: AnyView(CartView())),
+        CellItem(title: "Twitter", image: "Twitter", destination: AnyView(ProductView()))]
     
     var body: some View {
-        List {
-            ForEach(0 ..< cellList.count) { index in
-                if index == 0 {
-                    IconImageView()
-                } else {
-                    AuthListCell(cellItem: cellList[index], index: index)
-                }
+        List(cellList, id: \.id) { item in
+            if item.title == "Icon" {
+                IconImageView()
+            } else {
+                AuthListCell(cellItem: item)
             }
         }
     }

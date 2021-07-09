@@ -9,42 +9,40 @@ import SwiftUI
 
 struct AuthListCell: View {
     var cellItem: CellItem
-    var index: Int
+    @EnvironmentObject var tabbarViewModel: TabbarViewModel
     
     var body: some View {
-        Button(action: {
-            cellAction(index: index)
-        }, label: {
-            HStack(spacing: 15) {
-                Image(cellItem.image)
-                    .renderingMode(.original)
-                    .resizable()
-                    .aspectRatio(contentMode: .fit)
-                    .frame(maxWidth: 28, maxHeight: .infinity, alignment: .center)
-                
-                Text(cellItem.title)
-                    .foregroundColor(Color("DefaultText"))
-                    .font(.system(size: 17))
-                Spacer()
-                
-                Image(systemName: "chevron.forward")
-                    .resizable()
-                    .aspectRatio(contentMode: .fit)
-                    .foregroundColor(Color("DefaultText"))
-                    .frame(width: 15, height: 15, alignment: .center)
-            }
-            .padding(.top, 5)
-            .padding(.bottom, 5)
-        })
+        NavigationLink(
+            destination: cellItem.destination,
+            tag: cellItem.title,
+            selection: $tabbarViewModel.selectedItem) {
+            cell(cellItem: cellItem)
+        }
     }
-    
-    func cellAction(index: Int) {
-        print("index: \(index)")
+}
+
+struct cell: View {
+    var cellItem: CellItem
+    var body: some View {
+        HStack(spacing: 15) {
+            Image(cellItem.image)
+                .renderingMode(.original)
+                .resizable()
+                .aspectRatio(contentMode: .fit)
+                .frame(maxWidth: 28, maxHeight: .infinity, alignment: .center)
+
+            Text(cellItem.title)
+                .foregroundColor(Color("DefaultText"))
+                .font(.system(size: 17))
+            Spacer()
+        }
+        .padding(.top, 5)
+        .padding(.bottom, 5)
     }
 }
 
 struct AuthListCell_Previews: PreviewProvider {
     static var previews: some View {
-        AuthListCell(cellItem: CellItem(title: "Facebook", image: "Facebook"), index: 0)
+        AuthListCell(cellItem: CellItem(title: "Facebook", image: "Facebook", destination: AnyView(EmptyView())))
     }
 }
